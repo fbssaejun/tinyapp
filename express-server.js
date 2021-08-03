@@ -56,7 +56,9 @@ app.get("/urls/:shortURL", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL
   if(!urlDatabase[shortURL]) {
-    res.send("Short URL code does not exist. Check existing short URLs.");
+    res.status(404)
+    res.send(`Short URL code does not exist. Check existing short URLs.`);
+  } else {
     res.redirect(urlDatabase[shortURL]);
   }
 });
