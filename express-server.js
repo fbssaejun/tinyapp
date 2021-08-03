@@ -55,7 +55,10 @@ app.get("/urls/:shortURL", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL
-  res.redirect(urlDatabase[shortURL]);
+  if(!urlDatabase[shortURL]) {
+    res.send("Short URL code does not exist. Check existing short URLs.");
+    res.redirect(urlDatabase[shortURL]);
+  }
 });
 
 app.listen(PORT, () => {
