@@ -29,7 +29,7 @@ app.post("/login", (req, res) => {
 
 app.post("/logout", (req, res) => {
   const userName = req.body["username"]
-  console.log(res.clearCookie('username', userName))
+  res.clearCookie('username', userName)
   res.redirect('/urls')
 })
 
@@ -37,7 +37,6 @@ app.post("/urls", (req, res) => {
   const shortURL = generateRandomString(6);
   const longURL = req.body["longURL"];
   urlDatabase[shortURL] = longURL;
-  console.log(req.body);
   res.redirect(`/urls/${shortURL}`);
 });
 
