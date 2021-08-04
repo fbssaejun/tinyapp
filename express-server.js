@@ -44,6 +44,7 @@ app.post("/register", (req, res) => {
     alert("This email already exists.");
     return res.redirect("/register");
   }
+  
     users[userId] = {
       id: userId,
       email: userEmail,
@@ -55,6 +56,14 @@ app.post("/register", (req, res) => {
   res.redirect("/urls");
 
 })
+
+app.get("/login", (req, res) => {
+  const userId = req.cookies.userId
+  const user = users[userId]
+  const templateVars = { urls: urlDatabase, user };
+  res.render("login", templateVars)
+})
+
 
 app.post("/login", (req, res) => {
   const userName = req.body["username"]
