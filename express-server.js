@@ -46,6 +46,13 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   res.redirect("/urls");
 })
 
+app.post("/urls/:shortURL", (req, res) => {
+  const shortURL = req.params.shortURL;
+  const newLongURL = req.body["longURL"];
+  urlDatabase[shortURL] = newLongURL;
+  res.redirect("/urls");
+});
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -64,16 +71,8 @@ app.get("/urls/new", (req, res) => {
 
 app.get("/register", (req, res) => {
   const username = req.cookies.username;
-  const templateVars = { urls: urlDatabase, username };
-  res.render("register", templateVars)
+  res.render("register", {username});
 })
-
-app.post("/urls/:shortURL", (req, res) => {
-  const shortURL = req.params.shortURL;
-  const newLongURL = req.body["longURL"];
-  urlDatabase[shortURL] = newLongURL;
-  res.redirect("/urls");
-});
 
 app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
@@ -96,4 +95,3 @@ app.get("/u/:shortURL", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
