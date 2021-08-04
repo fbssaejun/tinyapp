@@ -16,8 +16,18 @@ const checkEmail = (email, usersDatabase) => {
   return undefined;
 };
 
+const filterUserUrls = (currentId, urlDatabase) => {
+  const urls = {};
+  for (const url in urlDatabase) {
+    if(urlDatabase[url].userId === currentId) {
+      urls[url] = urlDatabase[url];
+    }
+  }
+  return urls;
+}
 
 module.exports = {
   generateRandomString,
-  checkEmail
+  checkEmail,
+  filterUserUrls
 };
