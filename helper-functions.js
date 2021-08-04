@@ -7,10 +7,10 @@ const generateRandomString = (length) => {
   return result;
 };
 
-const checkDuplicateEmail = (email, users) => {
-  for (const key in users) {
-    if (users[key].email === email) {
-      return key;
+const checkEmail = (email, usersDatabase) => {
+  for (const user in usersDatabase) {
+    if (usersDatabase[user].email === email) {
+      return user;
     }
   }
   return undefined;
@@ -19,5 +19,5 @@ const checkDuplicateEmail = (email, users) => {
 
 module.exports = {
   generateRandomString,
-  checkDuplicateEmail
-}
+  checkEmail
+};
