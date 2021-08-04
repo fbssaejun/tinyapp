@@ -3,9 +3,13 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
+const alert = require('alert');
+
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.set("view engine", "ejs");
+
 
 const generateRandomString = (length) => {
   let result = '';
@@ -16,10 +20,46 @@ const generateRandomString = (length) => {
   return result;
 };
 
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  }
+}
+
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
+
+app.post("/register", (req, res) => {
+  const newUserId = generateRandomString(6);
+  const userEmail = req.body.email;
+  const userPassword = req.body.password;
+  if (!userEmail || !userPassword) {
+    alert("Please fill in all the information for registration!")
+    return res.status(400).render("register");
+  } else if (emailCheck(userEmail, users)) {
+    alert("Email already exist!");
+    return res.status(400).render("register");
+  }
+    const userID = generateRandomString();
+    users[userID] = {
+      id: userID,
+      email: userEmail,
+      password: bcrypt.hashSync(userPassword, saltRounds)
+    };
+
+  req.session["user_id"] = userID;
+  return res.redirect("/urls");
+
+})
 
 app.post("/login", (req, res) => {
   const userName = req.body["username"]
