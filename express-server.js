@@ -31,7 +31,7 @@ const users = {
     password: bcrypt.hashSync("dishwasher-funk", 10)
   }
 };
-console.log(users)
+
 const urlDatabase = {
   "b2xVn2": {
     longURL: "http://www.lighthouselabs.ca",
@@ -79,9 +79,9 @@ app.post("/login", (req, res) => {
  
 
   if (!userId) {
-    return res.status(403).send("<html><script>setTimeout(() => { window.location.href='./urls_index'}, 2000)</script><title>Login Error</title><body><h3>Sorry, Email does not exist. Please try again.</body></html>");
+    return res.status(403).send("<html><script>setTimeout(() => { window.location.href='/login'}, 3000)</script><title>Login Error</title><body><h3>Sorry, Email does not exist. Please try again.</body></html>");
   } else if ( !bcrypt.compareSync(userPassword, users[userId].password)) {
-    return res.status(403).send("<html><title>Login Error</title><body><h3>Sorry, Password is invalid. Please check your password</body></html>");
+    return res.status(403).send("<html><script>setTimeout(() => { window.location.href='/login'}, 3000)</script><title>Login Error</title><body><h3>Sorry, Password is invalid. Please check your password</body></html>");
   }
 
   // res.cookie("userId", userId);
