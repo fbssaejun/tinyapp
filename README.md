@@ -6,10 +6,12 @@
 
 ## Final Product
 
+### Create an account or login to access your short urls
 !["screenshot description"](https://github.com/fbssaejun/tinyapp/blob/master/docs/login.png)
 
 !["screenshot description"](https://github.com/fbssaejun/tinyapp/blob/master/docs/register.png)
 
+### Create, edit, delete, share short urls
 !["screenshot description"](https://github.com/fbssaejun/tinyapp/blob/master/docs/shorturls.png)
 
 ## Dependencies
