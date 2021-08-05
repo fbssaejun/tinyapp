@@ -8,13 +8,12 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
   <title>TinyApp</title>
 </head>
-<body>
+<body class="text-center">
   <%- include('partials/_header') %>
   <main style="margin: 1em;">
     <%if(!user) {%>
-      <h2>Hi there, Please login first, or create an account to use Tiny App!</h2>
+      <h2>Please login first, or create an account to use Tiny App</h2>
       <% } else {%>
-
     <h3>My URLs</h3>
     <table class="table">
       <thead>
@@ -44,7 +43,7 @@
             </td>
           </tr>
         <% } %>
-        <% } %>
+      <% } %>
 
       </tbody>
     </table>
