@@ -16,8 +16,18 @@ const checkEmail = (email, usersDatabase) => {
   return undefined;
 };
 
+const urlsForUser = (id, urlDatabase) => {
+  const urls = {};
+  for (const key in urlDatabase) {
+    if (urlDatabase[key].userId === id) {
+      urls[key] = urlDatabase[key].longURL;
+    }
+  }
+  return urls;
+};
 
 module.exports = {
   generateRandomString,
-  checkEmail
+  checkEmail,
+  urlsForUser
 };
