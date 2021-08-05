@@ -30,9 +30,9 @@
         <% for(let url in urls) { %>
 
           <tr>
-            <td><%= new Date().toDateString() %></td>
-            <td><%= url %></td>
-            <td><%= urls[url] %></td>
+            <td><%= urls[url].date %></td>
+            <td><a href=""><%= url %></a></td>
+            <td><%= urls[url].longURL %></td>
             <td>
               <form method="GET" action="/urls/<%= url %>">
                 <button class="btn btn-outline-primary">Edit</button>
