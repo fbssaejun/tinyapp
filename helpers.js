@@ -17,10 +17,11 @@ const getUserByEmail = (email, usersDatabase) => {
 };
 
 const urlsForUser = (id, urlDatabase) => {
+  console.log("urlsForUser", urlDatabase)
   const urls = {};
   for (const key in urlDatabase) {
     if (urlDatabase[key].userId === id) {
-      urls[key] = urlDatabase[key].longURL;
+      urls[key] = urlDatabase[key];
     }
   }
   return urls;
