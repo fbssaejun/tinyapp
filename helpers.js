@@ -17,7 +17,6 @@ const getUserByEmail = (email, usersDatabase) => {
 };
 
 const urlsForUser = (id, urlDatabase) => {
-  console.log("urlsForUser", urlDatabase)
   const urls = {};
   for (const key in urlDatabase) {
     if (urlDatabase[key].userId === id) {
