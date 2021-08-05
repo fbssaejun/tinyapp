@@ -3,7 +3,7 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
-const alert = require('alert');
+const alert = require("alert");
 const bcrypt = require('bcrypt');
 const {generateRandomString, checkEmail, urlsForUser} = require('./helper-functions');
 
@@ -17,12 +17,12 @@ const users = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    password:  bcrypt.hashSync("purple-monkey-dinosaur", 10)
   },
   "user2RandomID": {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "dishwasher-funk"
+    password: bcrypt.hashSync("dishwasher-funk", 10)
   }
 };
 
@@ -47,7 +47,6 @@ app.post("/register", (req, res) => {
   if (!userEmail || !userPassword) {
     res.status(400);
     alert("Please fill in all the information for registration!");
-    // res.redirect("/register");
   } else if (checkEmail(userEmail, users)) {
     res.status(400);
     alert("This email already exists.");
@@ -57,7 +56,7 @@ app.post("/register", (req, res) => {
   users[userId] = {
     id: userId,
     email: userEmail,
-    password: userPassword
+    password: bcrypt.hashSync(userPassword, 10)
   };
 
   res.cookie("userId", userId);
@@ -78,10 +77,10 @@ app.post("/login", (req, res) => {
   const userPassword = req.body.password;
   const userId = checkEmail(userEmail, users);
   if (!userId) {
-    console.log("Sorry, Email does not exist. Try again.");
+    res.send("Sorry, Email does not exist. Please try again.");
     return res.status(403).redirect("/login");
-  } else if (userPassword !== users[userId].password) {
-    console.log("Sorry, Password is invalid.");
+  } else if ( !bcrypt.compareSync(userPassword, users[userId].password)) {
+    res.send("Sorry, Password is invalid.");
     return res.status(403).redirect("/login");
   }
   
