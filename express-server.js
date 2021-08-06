@@ -1,15 +1,18 @@
-//Libraries, imports and global variables
+/* ** Libraries, imports and global variables ** */
 const express = require('express');
 const app = express();
 const PORT = 8080;
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
+const methodOverride = require('method-override');
 const bcrypt = require('bcrypt');
 const salt = bcrypt.genSaltSync(10);
 const {generateRandomString, getUserByEmail, urlsForUser} = require('./helpers');
 
-//Middleware function usage
+
+/* ** Middleware function usage ** */
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(methodOverride('_method'));
 app.use(cookieSession({
   name: 'session',
   keys: ['key1', 'key2']
@@ -17,7 +20,7 @@ app.use(cookieSession({
 
 app.set("view engine", "ejs");
 
-//Databases
+/* ** Databases ** */
 const users = {
   "userRandomID": {
     id: "userRandomID",
@@ -55,9 +58,9 @@ app.post("/register", (req, res) => {
   const userEmail = req.body.email;
   const userPassword = req.body.password;
   if (!userEmail || !userPassword) {
-    return res.status(400).send("<html><title>Registration Error</title><body><h3>Please fill in all the information for registration!</body></html>");
+    return res.status(400).send("<html><title>Registration Error</title><body><h3>Please fill in all the information for registration! <a href='/register'> Try again </a></body></html>");
   } else if (getUserByEmail(userEmail, users)) {
-    return res.status(400).send("<html><title>Registration Error</title><body><h3>This email already exists !</body></html>");
+    return res.status(400).send("<html><title>Registration Error</title><body><h3>This email already exists !<a href='/register'> Try again </a></body></html>");
   }
 
   users[userId] = {
@@ -91,9 +94,9 @@ app.post("/login", (req, res) => {
   const userId = getUserByEmail(userEmail, users);
 
   if (!userId) {
-    return res.status(403).send("<html><script>setTimeout(() => { window.location.href='/login'}, 3000)</script><title>Login Error</title><body><h3>Sorry, Email does not exist. Please try again.</body></html>");
+    return res.status(403).send("<html><script>setTimeout(() => { window.location.href='/login'}, 3000)</script><title>Login Error</title><body><h3>Sorry, Email does not exist. Please try again.<a href='/login'> Try again </a></body></html>");
   } else if (!bcrypt.compareSync(userPassword, users[userId].password)) {
-    return res.status(403).send("<html><script>setTimeout(() => { window.location.href='/login'}, 3000)</script><title>Login Error</title><body><h3>Sorry, Password is invalid. Please check your password</body></html>");
+    return res.status(403).send("<html><script>setTimeout(() => { window.location.href='/login'}, 3000)</script><title>Login Error</title><body><h3>Sorry, Password is invalid. Please check your password<a href='/login'> Try again </a></body></html>");
   }
 
   req.session.userId = userId;
@@ -119,7 +122,7 @@ app.post("/urls", (req, res) => {
   const shortURL = generateRandomString(6);
   const longURL = req.body["longURL"];
   const userId = req.session.userId;
-  const date = new Date().toDateString()
+  const date = new Date().toDateString();
   urlDatabase[shortURL] =  {longURL : longURL, userId : userId, date};
   res.redirect(`/urls/${shortURL}`);
 });
@@ -136,7 +139,7 @@ app.get("/urls/new", (req, res) => {
 });
 
 //Short URL Requests
-app.post("/urls/:shortURL/delete", (req, res) => {
+app.delete("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
   const userId = req.session.userId;
   const user = users[userId];
@@ -145,36 +148,34 @@ app.post("/urls/:shortURL/delete", (req, res) => {
     if (urlObject  && userId === urlObject.userId) {
       delete urlDatabase[shortURL];
       return res.redirect("/urls");
-    } else {
-      res.send("<html><title>Access Error</title><body><h3>You cannot access this url</body></html>");
-    }
-  } else {
-    res.send("<html><title>Access Error</title><body><h3>Please login to delete url</body></html>");
+    } 
+    return res.send("<html><title>Access Error</title><body><h3>You cannot access this url !</body></html>");
   }
+  res.send("<html><title>Access Error</title><body><h3>Please login to delete url<a href='/login'> Login </a></body></html>");
 });
 
 app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL].longURL;
-  const date = urlDatabase[shortURL].date
+  const date = urlDatabase[shortURL].date;
   const userId = req.session.userId;
   const user = users[userId];
   const urlObject = urlDatabase[shortURL];
   const templateVars = { shortURL, longURL, user , date};
-  if(user) {
-    if(urlObject  && userId === urlObject.userId) {
-    return res.render("urls_show", templateVars);
-    } 
-  }else {
-    res.send("<html><title>Access Error</title><body><h3>Please login first.</body></html>")
-  }
+  if (user) {
+    if (urlObject  && userId === urlObject.userId) {
+      return res.render("urls_show", templateVars);
+    }
+    return res.send("<html><title>Access Error</title><body><h3>This url does not belong to you.<a href='/login'> Login </a></body></html>")
+  } 
+  res.send("<html><title>Access Error</title><body><h3>Please login first.<a href='/login'> Login </a></body></html>");
 });
 
 app.post("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   const longURL = req.body["longURL"];
   const userId = req.session.userId;
-  const date = urlDatabase[shortURL].date
+  const date = urlDatabase[shortURL].date;
   urlDatabase[shortURL] = {longURL : longURL, userId: userId, date};
   res.redirect("/urls");
 });
@@ -183,10 +184,9 @@ app.post("/urls/:shortURL", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
   if (!urlDatabase[shortURL].longURL) {
-    res.status(404).send("<html><title>Invalid URL</title><body><h3>Short URL code does not exist. Check existing short URLs.</body></html>");
-  } else {
-    res.redirect(urlDatabase[shortURL].longURL);
-  }
+    return res.status(404).send("<html><title>Invalid URL</title><body><h3>Short URL code does not exist. Check existing short URLs.<a href='/urls'> Try again </a></body></html>");
+  } 
+  res.redirect(urlDatabase[shortURL].longURL);
 });
 
 //Listens and reacts to specific PORT number
