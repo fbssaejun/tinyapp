@@ -25,9 +25,7 @@
         </tr>
       </thead>
       <tbody>
-
         <% for(let url in urls) { %>
-
           <tr>
             <td><%= urls[url].date %></td>
             <td><a href="<%= urls[url].longURL %>"><%= url %></a></td>
@@ -38,7 +36,7 @@
               </form>
             </td>
             <td>
-              <form method="POST" action="/urls/<%= url %>/delete">
+              <form method="POST" action="/urls/<%= url %>/delete?_method=DELETE"> 
                 <button class="btn btn-outline-danger">Delete</button>
               </form>
             </td>
