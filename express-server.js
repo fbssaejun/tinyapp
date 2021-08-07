@@ -116,13 +116,13 @@ app.post("/login", (req, res) => {
     return res
       .status(403)
       .send(
-        "<html><script>setTimeout(() => { window.location.href='/login'}, 3000)</script><title>Login Error</title><body><h3>Sorry, Email does not exist. Please try again.<a href='/login'> Try again </a></body></html>"
+        "<html><title>Login Error</title><body><h3>Sorry, Email does not exist. Please try again.<a href='/login'> Try again </a></body></html>"
       );
   } else if (!bcrypt.compareSync(userPassword, users[userId].password)) {
     return res
       .status(403)
       .send(
-        "<html><script>setTimeout(() => { window.location.href='/login'}, 3000)</script><title>Login Error</title><body><h3>Sorry, Password is invalid. Please check your password<a href='/login'> Try again </a></body></html>"
+        "<html><title>Login Error</title><body><h3>Sorry, Password is invalid. Please check your password<a href='/login'> Try again </a></body></html>"
       );
   }
 
@@ -149,11 +149,15 @@ app.post("/urls", (req, res) => {
   const longURL = req.body["longURL"];
   const userId = req.session.userId;
   const date = new Date().toDateString();
-  if(userId) {
+  if (userId) {
     urlDatabase[shortURL] = { longURL: longURL, userId: userId, date };
     res.redirect("/urls");
   } else {
-    return res.status(400).send("<html><title>Access Error</title><body><h3>Please login first! </h3><a href='/login'> Login </a></body></html>")
+    return res
+      .status(400)
+      .send(
+        "<html><title>Access Error</title><body><h3>Please login first! </h3><a href='/login'> Login </a></body></html>"
+      );
   }
 });
 
@@ -190,8 +194,10 @@ app.delete("/urls/:shortURL/delete", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
-  if(!urlDatabase[shortURL]) {
-    res.send("<html><title> Error </title><body><h3>This url does not exist.</h3></body></html>")
+  if (!urlDatabase[shortURL]) {
+    res.send(
+      "<html><title> Error </title><body><h3>This url does not exist.</h3></body></html>"
+    );
   }
   const longURL = urlDatabase[shortURL].longURL;
   const date = urlDatabase[shortURL].date;
@@ -231,14 +237,15 @@ app.post("/urls/:shortURL", (req, res) => {
   res.send(
     "<html><title>Access Error</title><body><h3>Please login first! </h3><a href='/login'> Login </a></body></html>"
   );
-  
 });
 
 //Get request for final shortened url
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
-  if(!urlDatabase[shortURL]) {
-    return res.send("<html><title> Error </title><body><h3>This url does not exist.</h3></body></html>");
+  if (!urlDatabase[shortURL]) {
+    return res.send(
+      "<html><title> Error </title><body><h3>This url does not exist.</h3></body></html>"
+    );
   }
   if (!urlDatabase[shortURL].longURL) {
     return res
